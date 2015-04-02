@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 # This class represents the platform we jump on
 class Ball(pygame.sprite.Sprite):
@@ -101,7 +102,7 @@ class Player(pygame.sprite.Sprite):
 		self.jump_ready = True
 		self.frame_since_jump = 0
 pygame.init()
-pygame.mixer.music.load('an-turr.ogg')#load music
+pygame.mixer.music.load('sa.mp3')#load music
 pygame.mixer.music.play(-1)
 jump=pygame.mixer.Sound('jump.wav')
 #background=pygame.image.load('res/back.png').convert_alpha()
@@ -118,10 +119,15 @@ block_list = pygame.sprite.RenderPlain()
 all_sprites_list = pygame.sprite.RenderPlain()
 steps=list()
 gend=Ball()#for the moksha dwar!!
+gend1=Ball()
 gend.rect.x=200
+gend1.rect.x=200
 gend.rect.y=200
+gend1.rect.y=200
 gendg = pygame.sprite.RenderPlain()
+gendg1=pygame.sprite.RenderPlain()
 gendg.add(gend)
+gendg1.add(gend1)
 for i in range(100):
 	block = Platform()
 	#wal=Wall()
@@ -134,7 +140,7 @@ for i in range(100):
 	#block_list.add(wall[i])
 	all_sprites_list.add(steps[i])
 # Main program, create the blocks
-player = Player(400, 400)
+player = Player(200, 200)
 player.rect.x = 540
 player.rect.y = 450
 def scrolldownfunc(degree):
@@ -166,8 +172,10 @@ clock=pygame.time.Clock()
 #pygame.time.set_timer(USEREVENT+1, 50)
 
 # -------- Main Program Loop -----------
-ballxmove = 3
-ballymove = 3
+ballxmove = 15
+ballymove = 15
+ballxmove1=7
+ballymove1=9
 score=0
 coward=0
 def printText(txtText, Textfont, Textsize , Textx, Texty, Textcolor):
@@ -209,10 +217,10 @@ while done==False:
 		
 	scrolldownfunc(1) #to change the speed of scrolling 
 	
-	if player.rect.x >= 700:
-		player.rect.x = -15
-	if player.rect.x <= -20:
-		player.rect.x = 699
+	if player.rect.x >= 600:
+		player.rect.x = 0
+	if player.rect.x <= -10:
+		player.rect.x = 600
 	
 	score+=player.calc_grav(count)
 	player.update(block_list)			
@@ -227,22 +235,36 @@ while done==False:
 	# ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
 	# Limit to 20 frames per second
 	gendg.draw(screen)
-	gend.rect.x  += ballxmove	# Update ball position
+	gendg1.draw(screen)
+	gend.rect.x  += ballxmove
+	gend1.rect.x+=ballxmove1	# Update ball position
 	gend.rect.y += ballymove
+	gend1.rect.y+=ballymove1
 
 	if gend.rect.x > 600:			# Ball reached screen edges?
 		ballxmove = -2
+	if gend1.rect.x > 600:			# Ball reached screen edges?
+		ballxmove1 = -3
 	if gend.rect.x < 0:
 		ballxmove = 2
+	if gend1.rect.x < 0:
+		ballxmove1 = 3	
 	if gend.rect.y > 440:
 		ballymove = -2
+	if gend1.rect.y > 440:
+		ballymove1 = -3
 	if gend.rect.y < 0:
 		ballymove = 2
-	gendg.add(gend)		
+	if gend1.rect.y < 0:
+		ballymove1 = 3
+	gendg.add(gend)	
+	gendg1.add(gend1)	
 	clock.tick(60)
 	#time.delay(1)
 	if pygame.sprite.spritecollide(player, gendg, True):
 		done=True
+	elif pygame.sprite.spritecollide(player, gendg1, True):
+		 done =True
 	# Go ahead and update the screen with what we've drawn.
 	#block_list.clear(screen)	
 	#pygame.display.update()	
@@ -252,19 +274,19 @@ while done==False:
 rank=-1*score+1	
 norank=1
 if rank>1 and rank<100:
-	final= "superb!"
+	final= "Good"
 if rank<=6:
-	final="We Bow to You our Master!!!"
+	final="Great!!!"
 if rank>100 and rank<500:
-	final= "good!!"
+	final= "Sammita will award you!"
 if rank>500 and rank<1000:
-	final= "well tried!"
+	final= "Har gaye"
 if rank>1000 :
 	final= "give another shot!!"
 if rank>10000:
 	final= "seriously!! r u nuts??"
 if coward:
-	final="You do not deserve a rank"
+	final="You do not deserve a rank idiot"
 	norank=0
 screen.fill((0,0,0))
 rank=str(rank)
@@ -273,6 +295,6 @@ printText("Game Over!!", "MS Comic Sans", 30, 230, 220, red)
 if norank:
 	printText(r, "MS Comic Sans", 30, 230, 250, red)
 printText(final, "MS Comic Sans", 30, 230, 280, red)
-#time.delay(10)
+time.sleep(3)
 
 pygame.quit ()
